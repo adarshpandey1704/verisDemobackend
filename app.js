@@ -1,14 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const HttpError = require('./models/http-error');
-const User = require('./models/user-model');
-const songRoutes = require('./Routes/application-routes')
-const userRoutes = require('./Routes/user-routes');
+const Event = require('./models/event-model');
+const userRoutes = require('./Routes/event-routes');
 
 
 const app = express();
+
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -23,8 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', userRoutes);
-app.use('/users/songs', songRoutes);
+app.use('/events', userRoutes);
   
 app.use((error, req, res, next) => {
     if (res.headerSent) {
@@ -34,12 +35,10 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
-  mongoose.connect('mongodb+srv://yash_sharma:Expert7827@aaapowertech.5mjeafs.mongodb.net/?retryWrites=true&w=majority').then(()=>{
-    app.listen(5000);
+  mongoose.connect('mongodb+srv://users:users123@cluster0.feary.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(()=>{
+    app.listen(8080);
 }).catch(err=>{
-    return res.json(new HttpError(
-        "Could not connect to server.",
-    ))
+    console.log("Cannot connect to server", err);
 });
 
 
